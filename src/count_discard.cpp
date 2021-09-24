@@ -24,7 +24,7 @@ int main()
         std::exit(1);
     }
     char prev[len] = "";
-    int idx = 0, ans = 0;
+    int idx = 0, ans[37] = {};
     while (ifs)
     {
         ifs >> prev[idx];
@@ -39,12 +39,16 @@ int main()
             current[i] = prev[(idx + i) % len];
         }
 
-        bool good = true;
-        for (int i = 0; i < len; i++)
+        if (current[0] != '<')
         {
-            if (current[i] != "<D"[i])
+            continue;
+        }
+        bool good = false;
+        for (int i = 0; i < 4; i++)
+        {
+            if (current[1] == i + 'D')
             {
-                good = false;
+                good = true;
                 break;
             }
         }
@@ -73,12 +77,14 @@ int main()
             {
                 continue;
             }
-            if (kind(pai_num) == 0)
-            {
-                ans++;
-            }
+            ans[kind(pai_num)]++;
         }
     }
-    std::cout << ans << std::endl;
+
+    for (int i = 0; i < 37; i++)
+    {
+        std::cout << i << '\t' << ans[i] << std::endl;
+    }
+
     return 0;
 }
