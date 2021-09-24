@@ -3,15 +3,16 @@
 
 int main()
 {
-    constexpr int len = 5;
+    constexpr int len = 2;
     std::ifstream ifs("/home/hokuto/mahjong/score/hounan4/merged.txt", std::ios::in);
     if (not ifs)
     {
         std::cerr << "ERROR" << std::endl;
+        std::exit(1);
     }
     char prev[len] = "";
     int idx = 0, ans = 0;
-    while (not ifs.eof())
+    while (ifs.good())
     {
         ifs >> prev[idx];
         idx++;
@@ -28,7 +29,7 @@ int main()
         bool good = true;
         for (int i = 0; i < len; i++)
         {
-            if (current[i] != "<T0/>"[i])
+            if (current[i] != "<D"[i])
             {
                 good = false;
                 break;
@@ -37,7 +38,37 @@ int main()
 
         if (good)
         {
-            ans++;
+            bool fst = true;
+            int pai_num = 0;
+            char digit;
+            while (true)
+            {
+                ifs >> digit;
+                if (not isdigit(digit))
+                {
+                    if (fst)
+                    {
+                        pai_num = -1;
+                    }
+                    break;
+                }
+                pai_num *= 10;
+                pai_num += digit - '0';
+                fst = false;
+            }
+            if (pai_num == -1)
+            {
+                continue;
+            }
+            if (not ifs.good())
+            {
+                std::cerr << "ERROR" << std::endl;
+                std::exit(1);
+            }
+            if (pai_num / 4 == 0)
+            {
+                ans++;
+            }
         }
     }
     std::cout << ans << std::endl;
