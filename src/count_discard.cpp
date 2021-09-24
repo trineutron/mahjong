@@ -1,10 +1,23 @@
 #include <iostream>
 #include <fstream>
 
+int kind(int pai_num)
+{
+    int res = pai_num / 4;
+    for (int color = 0; color < 3; color++)
+    {
+        if (pai_num > 36 * color + 16)
+        {
+            res++;
+        }
+    }
+    return res;
+}
+
 int main()
 {
     constexpr int len = 2;
-    std::ifstream ifs("/home/hokuto/mahjong/score/hounan4/merged.txt", std::ios::in);
+    std::ifstream ifs("../score/hounan4/merged.txt");
     if (not ifs)
     {
         std::cerr << "ERROR" << std::endl;
@@ -12,7 +25,7 @@ int main()
     }
     char prev[len] = "";
     int idx = 0, ans = 0;
-    while (ifs.good())
+    while (ifs)
     {
         ifs >> prev[idx];
         idx++;
@@ -60,12 +73,7 @@ int main()
             {
                 continue;
             }
-            if (not ifs.good())
-            {
-                std::cerr << "ERROR" << std::endl;
-                std::exit(1);
-            }
-            if (pai_num / 4 == 0)
+            if (kind(pai_num) == 0)
             {
                 ans++;
             }
