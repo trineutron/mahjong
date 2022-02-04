@@ -80,6 +80,10 @@ void simulate(std::vector<int> &magic, std::vector<int> &real)
                     {
                         for (int n = 0; n < 3; n++)
                         {
+                            if (m == n)
+                            {
+                                continue;
+                            }
                             v.at(9 * j + l + m) += 10 * hand.at(9 * j + l + n);
                         }
                     }
