@@ -75,23 +75,61 @@ void simulate(std::vector<int> &magic, std::vector<int> &real)
         }
         else
         {
-            auto v = value;
-            for (int j = 0; j < 3; j++)
+            int chows_before = count_chows(hand);
+            int wait_no_loss = 0;
+            for (int l = 0; l < kind; l++)
             {
-                for (int l = 0; l < 7; l++)
+                int count = 0;
+                for (int m = 0; m < 4; m++)
                 {
-                    for (int m = 0; m < 3; m++)
+                    if (not draw.at(4 * l + m))
                     {
-                        for (int n = 0; n < 3; n++)
-                        {
-                            if (m == n)
-                            {
-                                continue;
-                            }
-                            v.at(9 * j + l + m) += 10 * hand.at(9 * j + l + n);
-                        }
+                        count++;
                     }
                 }
+                if (count == 0)
+                {
+                    continue;
+                }
+                hand.at(l)++;
+                if (count_chows(hand) > chows_before)
+                {
+                    wait_no_loss += count;
+                }
+                hand.at(l)--;
+            }
+            auto v = value;
+            for (int j = 0; j < kind; j++)
+            {
+                if (hand.at(j) == 0)
+                {
+                    continue;
+                }
+                int wait = 0;
+                hand.at(j)--;
+                for (int l = 0; l < kind; l++)
+                {
+                    int count = 0;
+                    for (int m = 0; m < 4; m++)
+                    {
+                        if (not draw.at(4 * l + m))
+                        {
+                            count++;
+                        }
+                    }
+                    if (count == 0)
+                    {
+                        continue;
+                    }
+                    hand.at(l)++;
+                    if (count_chows(hand) > chows_before)
+                    {
+                        wait += count;
+                    }
+                    hand.at(l)--;
+                }
+                hand.at(j)++;
+                v.at(j) += 100 * (wait_no_loss - wait);
             }
 
             int x = -1;
