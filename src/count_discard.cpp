@@ -19,15 +19,16 @@ int kind(int pai_num) {
 
 int main() {
     constexpr int len = 2;
-    std::ifstream ifs("../score/hounan4/merged.txt");
-    if (not ifs) {
+    FILE *fp = fopen("../score/hounan4/merged.txt", "r");
+    if (fp == NULL) {
         std::cerr << "ERROR" << std::endl;
-        std::exit(1);
+        return 1;
     }
-    char prev[len] = "";
+    int prev[len] = {};
     int idx = 0, draw[37] = {}, discard[37] = {};
-    while (ifs) {
-        ifs.get(prev[idx]);
+    while (true) {
+        prev[idx] = getc(fp);
+        if (prev[idx] == EOF) break;
         idx++;
         if (idx == len) {
             idx = 0;
@@ -59,9 +60,8 @@ int main() {
 
         bool fst = true;
         int pai_num = 0;
-        char digit;
         while (true) {
-            ifs >> digit;
+            int digit = getc(fp);
             if (not isdigit(digit)) {
                 if (fst) {
                     pai_num = -1;
@@ -81,6 +81,7 @@ int main() {
             discard[kind(pai_num)]++;
         }
     }
+    fclose(fp);
 
     std::cout << "text" << '\t' << "draw" << '\t' << "discard" << std::endl;
     for (int i = 0; i < 37; i++) {

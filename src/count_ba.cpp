@@ -1,4 +1,3 @@
-#include <fstream>
 #include <iomanip>
 #include <iostream>
 
@@ -20,15 +19,16 @@ int kind(int pai_num) {
 
 int main() {
     constexpr int len = 12;
-    std::ifstream ifs("../score/hounan4/merged.txt");
-    if (not ifs) {
+    FILE *fp = fopen("../score/hounan4/merged.txt", "r");
+    if (fp == NULL) {
         std::cerr << "ERROR" << std::endl;
-        std::exit(1);
+        return 1;
     }
-    char prev[len] = "";
+    int prev[len] = {};
     int idx = 0, count_kyoku[16] = {}, count_ba[16] = {}, count_reach[16] = {};
-    while (ifs) {
-        ifs.get(prev[idx]);
+    while (true) {
+        prev[idx] = getc(fp);
+        if (prev[idx] == EOF) break;
         idx++;
         if (idx == len) {
             idx = 0;
@@ -49,17 +49,17 @@ int main() {
         }
 
         int kyoku = -1, ba = -1, reach = -1;
-        ifs >> kyoku;
-        ifs.ignore();
-        ifs >> ba;
-        ifs.ignore();
-        ifs >> reach;
-        ifs.ignore();
+        if (fscanf(fp, "%d%*c%d%*c%d%*c", &kyoku, &ba, &reach) != 3) {
+            std::cerr << "ERROR" << std::endl;
+            fclose(fp);
+            return 1;
+        }
 
         count_kyoku[kyoku]++;
         count_ba[ba]++;
         count_reach[reach]++;
     }
+    fclose(fp);
 
     std::cout << "num" << '\t' << "kyoku" << '\t' << "ba" << '\t' << "reach"
               << std::endl;
