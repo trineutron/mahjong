@@ -1,65 +1,31 @@
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 
-const std::string text[]{"1m",  "2m", "3m", "4m", "r5m", "5m", "6m",  "7m",
-                         "8m",  "9m", "1p", "2p", "3p",  "4p", "r5p", "5p",
-                         "6p",  "7p", "8p", "9p", "1s",  "2s", "3s",  "4s",
-                         "r5s", "5s", "6s", "7s", "8s",  "9s", "東",  "南",
-                         "西",  "北", "白", "發", "中"};
-
-int kind(int pai_num) {
-    int res = pai_num / 4;
-    for (int color = 0; color < 3; color++) {
-        if (pai_num > 36 * color + 16) {
-            res++;
-        }
-    }
-    return res;
-}
-
 int main() {
-    constexpr int len = 12;
-    FILE *fp = fopen("../score/hounan4/merged.txt", "r");
-    if (fp == NULL) {
-        std::cerr << "ERROR" << std::endl;
-        return 1;
-    }
-    int prev[len] = {};
-    int idx = 0, count_kyoku[16] = {}, count_ba[16] = {}, count_reach[16] = {};
-    while (true) {
-        prev[idx] = getc(fp);
-        if (prev[idx] == EOF) break;
-        idx++;
-        if (idx == len) {
-            idx = 0;
-        }
-
-        bool good = true;
-        int idx_next = idx;
-        for (int i = 0; i < len; i++) {
-            if (prev[idx_next] != "<INIT seed=\""[i]) {
-                good = false;
-                break;
-            }
-            idx_next++;
-            if (idx_next >= len) idx_next -= len;
-        }
-        if (not good) {
+    std::ifstream ifs("../score/hounan4/merged.txt");
+    std::string line;
+    std::stringstream ss;
+    int count_kyoku[16] = {}, count_ba[16] = {}, count_reach[16] = {};
+    while (std::getline(ifs, line)) {
+        if (line.substr(0, 12) != "<INIT seed=\"") {
             continue;
         }
 
         int kyoku = -1, ba = -1, reach = -1;
-        if (fscanf(fp, "%d%*c%d%*c%d%*c", &kyoku, &ba, &reach) != 3) {
-            std::cerr << "ERROR" << std::endl;
-            fclose(fp);
-            return 1;
-        }
+        ss.str("");
+        ss << line;
+        ss.ignore(12);
+        ss >> kyoku;
+        ss.ignore();
+        ss >> ba;
+        ss.ignore();
+        ss >> reach;
 
         count_kyoku[kyoku]++;
         count_ba[ba]++;
         count_reach[reach]++;
     }
-    fclose(fp);
 
     std::cout << "num" << '\t' << "kyoku" << '\t' << "ba" << '\t' << "reach"
               << std::endl;
