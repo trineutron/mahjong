@@ -7,7 +7,9 @@ int main() {
         if (c == EOF) break;
         s.push_back(c);
         if (c == '>') {
-            std::cout << s << '\n';
+            if (s.substr(0, 8) != "<SHUFFLE") {
+                std::cout << s << '\n';
+            }
             s.clear();
         }
     }
