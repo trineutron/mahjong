@@ -4,7 +4,7 @@
 
 #include "xrand.h"
 
-constexpr int kind = 34, tile = 4 * kind, turn = 18, iter = 1000000;
+constexpr int kind = 34, tile = 4 * kind, player = 4, turn = 18, iter = 1000000;
 
 xrand rng;
 std::uniform_int_distribution<> dist(0, tile - 1);
@@ -33,35 +33,42 @@ void simulate(std::vector<int> &magic, std::vector<int> &real) {
         hand.at(k / 4)++;
     }
     for (int i = 0; i < turn; i++) {
-        int k = dist(rng);
-        while (draw.at(k)) {
-            k = dist(rng);
-        }
-        draw.at(k) = true;
-        seen.at(k / 4)++;
-        hand.at(k / 4)++;
-        if (contain_7pairs(seen)) {
-            win_seen = true;
-        }
-        if (contain_7pairs(hand)) {
-            win_real = true;
-        }
-        int discard = k / 4;
-        for (int j = 0; j < kind; j++) {
-            if (hand.at(j) >= 3) {
-                discard = j;
-                break;
+        for (int p = 0; p < player; p++) {
+            int k = dist(rng);
+            while (draw.at(k)) {
+                k = dist(rng);
             }
-            if (hand.at(j) == 1 and hand.at(discard) == 2) {
-                discard = j;
+            draw.at(k) = true;
+            seen.at(k / 4)++;
+            hand.at(k / 4)++;
+            if (contain_7pairs(seen)) {
+                win_seen = true;
             }
-        }
-        hand.at(discard)--;
-        if (win_seen) {
-            magic.at(i)++;
-        }
-        if (win_real) {
-            real.at(i)++;
+            if (p != 3) {
+                seen.at(k / 4)--;
+            }
+            if (contain_7pairs(hand)) {
+                win_real = true;
+            }
+            int discard = k / 4;
+            if (p == 3) {
+                for (int j = 0; j < kind; j++) {
+                    if (hand.at(j) >= 3) {
+                        discard = j;
+                        break;
+                    }
+                    if (hand.at(j) == 1 and hand.at(discard) == 2) {
+                        discard = j;
+                    }
+                }
+            }
+            hand.at(discard)--;
+            if (p == 3 and win_seen) {
+                magic.at(i)++;
+            }
+            if (p == 3 and win_real) {
+                real.at(i)++;
+            }
         }
     }
 }

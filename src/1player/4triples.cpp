@@ -9,16 +9,6 @@ constexpr int kind = 34, tile = 4 * kind, turn = 18, iter = 10000000;
 xrand rng;
 std::uniform_int_distribution<> dist(0, tile - 1);
 
-bool contain_3pairs(const std::vector<int> &hand) {
-    int count_pairs = 0;
-    for (int i = 0; i < kind; i++) {
-        if (hand.at(i) >= 2) {
-            count_pairs++;
-        }
-    }
-    return count_pairs >= 3;
-}
-
 bool contain_4triples(const std::vector<int> &hand) {
     int count_triples = 0, count_pairs = 0;
     for (int i = 0; i < kind; i++) {
