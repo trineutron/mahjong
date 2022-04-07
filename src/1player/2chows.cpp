@@ -64,8 +64,11 @@ void simulate(std::vector<int> &magic, std::vector<int> &real) {
                 if (hand.at(j) == 0) {
                     continue;
                 }
-                if (hand.at(j) >= 2 or v.at(j) == 0) {
+                if (v.at(j) == 0) {
                     break;
+                }
+                if (hand.at(j) == 1) {
+                    v.at(j) += 10;
                 }
                 int wait = 0;
                 hand.at(j)--;
@@ -89,7 +92,7 @@ void simulate(std::vector<int> &magic, std::vector<int> &real) {
                 if (hand.at(j) == 0) {
                     continue;
                 }
-                if (hand.at(j) >= 2 or v.at(j) == 0) {
+                if (v.at(j) == 0) {
                     x = j;
                     break;
                 }
