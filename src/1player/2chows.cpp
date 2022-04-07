@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <random>
 #include <vector>
@@ -16,13 +17,12 @@ int count_chows(std::vector<int> hand) {
     int count = 0;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 7; j++) {
-            while (hand.at(9 * i + j) and hand.at(9 * i + j + 1) and
-                   hand.at(9 * i + j + 2)) {
-                count++;
-                hand.at(9 * i + j)--;
-                hand.at(9 * i + j + 1)--;
-                hand.at(9 * i + j + 2)--;
-            }
+            const int idx = 9 * i + j;
+            const int k = std::min({hand[idx], hand[idx + 1], hand[idx + 2]});
+            count += k;
+            hand[idx] -= k;
+            hand[idx + 1] -= k;
+            hand[idx + 2] -= k;
         }
     }
     return count;
@@ -59,37 +59,18 @@ void simulate(std::vector<int> &magic, std::vector<int> &real) {
             hand.at(k / 4)--;
         } else {
             int chows_before = count_chows(hand);
-            int wait_no_loss = 0;
-            for (int l = 0; l < kind; l++) {
-                int count = 0;
-                for (int m = 0; m < 4; m++) {
-                    if (not draw.at(4 * l + m)) {
-                        count++;
-                    }
-                }
-                if (count == 0) {
-                    continue;
-                }
-                hand.at(l)++;
-                if (count_chows(hand) > chows_before) {
-                    wait_no_loss += count;
-                }
-                hand.at(l)--;
-            }
             auto v = value;
             for (int j = 0; j < kind; j++) {
                 if (hand.at(j) == 0) {
                     continue;
                 }
+                if (hand.at(j) >= 2 or v.at(j) == 0) {
+                    break;
+                }
                 int wait = 0;
                 hand.at(j)--;
                 for (int l = 0; l < kind; l++) {
-                    int count = 0;
-                    for (int m = 0; m < 4; m++) {
-                        if (not draw.at(4 * l + m)) {
-                            count++;
-                        }
-                    }
+                    int count = 4 - seen.at(l);
                     if (count == 0) {
                         continue;
                     }
@@ -100,7 +81,7 @@ void simulate(std::vector<int> &magic, std::vector<int> &real) {
                     hand.at(l)--;
                 }
                 hand.at(j)++;
-                v.at(j) += 100 * (wait_no_loss - wait);
+                v.at(j) += 100 * (tile - wait);
             }
 
             int x = -1;
