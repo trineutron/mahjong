@@ -15,7 +15,6 @@ int main() {
         auto pos = line.find(' ');
         std::string type = line.substr(0, pos);
         if (type != "<AGARI") continue;
-        int hand_remain = 14;
         while (pos != std::string::npos) {
             auto pos_next = line.find(' ', pos + 1);
             std::string element = line.substr(pos + 1, pos_next - pos - 1);
@@ -29,7 +28,6 @@ int main() {
                     ss >> hai;
                     if (not ss) break;
                     count.at(kind(hai))++;
-                    hand_remain--;
                 }
             } else if (type_element == "m") {
                 std::stringstream ss(element.substr(pos_element + 1));
@@ -38,20 +36,20 @@ int main() {
                     ss.ignore();
                     ss >> code;
                     if (not ss) break;
-                    int ft = fulou_type(code);
-                    if (ft == NUKI or ft == ADD_QUAD or ft == QUAD) {
-                        hand_remain++;
-                    }
+                    int tile_get = fulou_get(code);
                     std::vector<int> contain = fulou_contain(code);
                     for (auto &&hai : contain) {
-                        count.at(kind(hai))++;
-                        hand_remain--;
+                        if (hai == tile_get) {
+                            tile_get = -1;
+                        } else {
+                            count.at(kind(hai))++;
+                        }
                     }
+                    assert(tile_get == -1);
                 }
             }
             pos = pos_next;
         }
-        assert(hand_remain == 0);
     }
 
     auto tile_total = 0;
