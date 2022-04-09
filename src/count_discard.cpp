@@ -47,7 +47,7 @@ int main() {
 
     std::cout << "text" << '\t' << "draw" << '\t' << "discard" << std::endl;
     for (int i = 0; i < 37; i++) {
-        std::cout << text[i] << '\t' << draw[i] << '\t' << discard[i]
+        std::cout << pai_text[i] << '\t' << draw[i] << '\t' << discard[i]
                   << std::endl;
     }
 

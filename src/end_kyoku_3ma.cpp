@@ -92,15 +92,15 @@ int main() {
             }
         }
     }
-    std::cout << "ツモ\t\t" << tsumo << std::endl;
-    std::cout << "ロン\t\t" << ron << std::endl;
-    std::cout << "ダブロン\t" << ron2 << std::endl;
-    std::cout << "流局\t\t" << ryuukyoku << std::endl;
-    std::cout << "流し満貫\t" << nm << std::endl;
-    std::cout << "九種九牌\t" << yao9 << std::endl;
-    std::cout << "四風子連打\t" << kaze4 << std::endl;
-    std::cout << "四家立直\t" << reach4 << std::endl;
-    std::cout << "四槓散了\t" << kan4 << std::endl;
-    std::cout << "三家和\t\t" << ron3 << std::endl;
+    std::cout << u8"ツモ\t" << tsumo << std::endl;
+    std::cout << u8"ロン\t" << ron << std::endl;
+    std::cout << u8"ダブロン\t" << ron2 << std::endl;
+    std::cout << u8"流局\t" << ryuukyoku << std::endl;
+    std::cout << u8"流し満貫\t" << nm << std::endl;
+    std::cout << u8"九種九牌\t" << yao9 << std::endl;
+    std::cout << u8"四風子連打\t" << kaze4 << std::endl;
+    std::cout << u8"四家立直\t" << reach4 << std::endl;
+    std::cout << u8"四槓散了\t" << kan4 << std::endl;
+    std::cout << u8"三家和\t" << ron3 << std::endl;
     return 0;
 }
