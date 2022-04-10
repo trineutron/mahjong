@@ -73,6 +73,7 @@ bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern) {
     if (count_yao != 14) is_13orphans = false;
     if (is_13orphans) {
         pattern.emplace_back();
+        pattern.back().emplace_back(YAO13);
         for (auto &&x : yao) {
             for (int i = 0; i < hand[x]; i++) {
                 pattern.back().emplace_back(x);
@@ -91,6 +92,7 @@ bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern) {
     }
     if (is_7pairs) {
         pattern.emplace_back();
+        pattern.back().emplace_back(PAIR7);
         for (int i = 0; i < 34; i++) {
             if (hand[i] == 2) {
                 pattern.back().emplace_back(i);
