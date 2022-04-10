@@ -1,7 +1,6 @@
 #include "waitlib.h"
 
-bool split_mianzi(std::vector<int> &hand,
-                  std::vector<std::vector<int>> &pattern, int remain,
+bool split_mianzi(std::vector<int> &hand, pattern_t &pattern, int remain,
                   int start = 0) {
     // 全面子取り出せた
     if (remain == 0) {
@@ -58,8 +57,7 @@ bool split_mianzi(std::vector<int> &hand,
     return res;
 }
 
-bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern,
-             int mianzi) {
+bool isagari(std::vector<int> &hand, pattern_t &pattern, int mianzi) {
     // 国士無双
     const std::vector<int> yao{0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33};
     bool is_13orphans = true;
@@ -121,8 +119,8 @@ bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern,
     return is_7pairs or is_win_mianzi;
 }
 
-std::vector<int> list_wait(std::vector<int> &hand,
-                           std::vector<std::vector<int>> &pattern, int mianzi) {
+std::vector<int> list_wait(std::vector<int> &hand, pattern_t &pattern,
+                           int mianzi) {
     std::vector<int> res;
     for (int i = 0; i < 34; i++) {
         hand[i]++;
