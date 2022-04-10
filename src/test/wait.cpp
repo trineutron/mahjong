@@ -3,11 +3,18 @@
 #include "../waitlib.h"
 
 int main() {
-    std::vector<int> hand{0, 2, 3, 2, 1, 2, 0, 3};
+    std::vector<int> hand{0, 3, 3, 3, 2, 2};
     hand.resize(34);
-    std::vector<int> machi = list_wait(hand);
+    std::vector<std::vector<int>> pattern;
+    std::vector<int> machi = list_wait(hand, pattern);
     for (auto &&x : machi) {
         std::cout << x << std::endl;
+    }
+    for (auto &&v : pattern) {
+        for (auto &&x : v) {
+            std::cout << ' ' << x;
+        }
+        std::cout << std::endl;
     }
     return 0;
 }

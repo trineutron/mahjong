@@ -1,38 +1,64 @@
 #include "waitlib.h"
 
-bool split_mianzi(std::vector<int> &hand, int remain) {
+bool split_mianzi(std::vector<int> &hand,
+                  std::vector<std::vector<int>> &pattern, int remain,
+                  int start = 0) {
     // 全面子取り出せた
-    if (remain == 0) return true;
+    if (remain == 0) {
+        pattern.emplace_back();
+        return true;
+    }
+
+    bool res = false;
 
     // 刻子
     for (int i = 0; i < 34; i++) {
-        if (hand[i] < 3) continue;
+        if (i < start or hand[i] < 3) continue;
         hand[i] -= 3;
-        bool res = split_mianzi(hand, remain - 1);
+        bool res_split = split_mianzi(hand, pattern, remain - 1, i + 1);
         hand[i] += 3;
-        if (res) return true;
+        if (res_split) {
+            for (auto it = pattern.end() - 1; it >= pattern.begin(); it--) {
+                if (int(it->size()) >= 3 * remain) break;
+                it->emplace_back(i);
+                it->emplace_back(i);
+                it->emplace_back(i);
+            }
+            res = true;
+        }
     }
 
     // 順子
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 7; j++) {
             const int idx = 9 * i + j;
+            if (idx + 34 < start) continue;
             if (hand[idx] and hand[idx + 1] and hand[idx + 2]) {
                 hand[idx]--;
                 hand[idx + 1]--;
                 hand[idx + 2]--;
-                bool res = split_mianzi(hand, remain - 1);
+                bool res_split =
+                    split_mianzi(hand, pattern, remain - 1, idx + 34);
                 hand[idx]++;
                 hand[idx + 1]++;
                 hand[idx + 2]++;
-                if (res) return true;
+                if (res_split) {
+                    for (auto it = pattern.end() - 1; it >= pattern.begin();
+                         it--) {
+                        if (int(it->size()) >= 3 * remain) break;
+                        it->emplace_back(idx);
+                        it->emplace_back(idx + 1);
+                        it->emplace_back(idx + 2);
+                    }
+                    res = true;
+                }
             }
         }
     }
-    return false;
+    return res;
 }
 
-bool isagari(std::vector<int> &hand) {
+bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern) {
     // 国士無双
     const std::vector<int> yao{0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33};
     bool is_13orphans = true;
@@ -45,7 +71,15 @@ bool isagari(std::vector<int> &hand) {
         count_yao += hand[x];
     }
     if (count_yao != 14) is_13orphans = false;
-    if (is_13orphans) return true;
+    if (is_13orphans) {
+        pattern.emplace_back();
+        for (auto &&x : yao) {
+            for (int i = 0; i < hand[x]; i++) {
+                pattern.back().emplace_back(x);
+            }
+        }
+        return true;
+    }
 
     // 七対子
     bool is_7pairs = true;
@@ -55,28 +89,41 @@ bool isagari(std::vector<int> &hand) {
             break;
         }
     }
-    if (is_7pairs) return true;
+    if (is_7pairs) {
+        pattern.emplace_back();
+        for (int i = 0; i < 34; i++) {
+            if (hand[i] == 2) {
+                pattern.back().emplace_back(i);
+                pattern.back().emplace_back(i);
+            }
+        }
+    }
 
     // 面子手
     bool is_win_mianzi = false;
     for (int i = 0; i < 34; i++) {
         if (hand[i] < 2) continue;
         hand[i] -= 2;
-        if (split_mianzi(hand, 4)) {
+        if (split_mianzi(hand, pattern, 4)) {
+            for (auto it = pattern.end() - 1; it >= pattern.begin(); it--) {
+                if (int(it->size()) >= 14) break;
+                it->emplace_back(i);
+                it->emplace_back(i);
+            }
             is_win_mianzi = true;
         }
         hand[i] += 2;
-        if (is_win_mianzi) return true;
     }
 
-    return false;
+    return is_win_mianzi;
 }
 
-std::vector<int> list_wait(std::vector<int> &hand) {
+std::vector<int> list_wait(std::vector<int> &hand,
+                           std::vector<std::vector<int>> &pattern) {
     std::vector<int> res;
     for (int i = 0; i < 34; i++) {
         hand[i]++;
-        if (isagari(hand)) res.push_back(i);
+        if (isagari(hand, pattern)) res.push_back(i);
         hand[i]--;
     }
     return res;
