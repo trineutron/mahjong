@@ -58,7 +58,8 @@ bool split_mianzi(std::vector<int> &hand,
     return res;
 }
 
-bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern) {
+bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern,
+             int mianzi) {
     // 国士無双
     const std::vector<int> yao{0, 8, 9, 17, 18, 26, 27, 28, 29, 30, 31, 32, 33};
     bool is_13orphans = true;
@@ -106,9 +107,9 @@ bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern) {
     for (int i = 0; i < 34; i++) {
         if (hand[i] < 2) continue;
         hand[i] -= 2;
-        if (split_mianzi(hand, pattern, 4)) {
+        if (split_mianzi(hand, pattern, mianzi)) {
             for (auto it = pattern.end() - 1; it >= pattern.begin(); it--) {
-                if (int(it->size()) >= 14) break;
+                if (int(it->size()) >= 3 * mianzi + 2) break;
                 it->emplace_back(i);
                 it->emplace_back(i);
             }
@@ -121,11 +122,11 @@ bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern) {
 }
 
 std::vector<int> list_wait(std::vector<int> &hand,
-                           std::vector<std::vector<int>> &pattern) {
+                           std::vector<std::vector<int>> &pattern, int mianzi) {
     std::vector<int> res;
     for (int i = 0; i < 34; i++) {
         hand[i]++;
-        if (isagari(hand, pattern)) res.push_back(i);
+        if (isagari(hand, pattern, mianzi)) res.push_back(i);
         hand[i]--;
     }
     return res;
