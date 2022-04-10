@@ -123,6 +123,7 @@ std::vector<int> list_wait(std::vector<int> &hand, pattern_t &pattern,
                            int mianzi) {
     std::vector<int> res;
     for (int i = 0; i < 34; i++) {
+        if (hand[i] == 4) continue;
         hand[i]++;
         if (isagari(hand, pattern, mianzi)) res.push_back(i);
         hand[i]--;
