@@ -118,7 +118,7 @@ bool isagari(std::vector<int> &hand, std::vector<std::vector<int>> &pattern,
         hand[i] += 2;
     }
 
-    return is_win_mianzi;
+    return is_7pairs or is_win_mianzi;
 }
 
 std::vector<int> list_wait(std::vector<int> &hand,
