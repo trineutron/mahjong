@@ -32,26 +32,28 @@ bool split_mianzi(std::vector<int> &hand, pattern_t &pattern, int remain,
         for (int j = 0; j < 7; j++) {
             const int idx = 9 * i + j;
             if (idx + 34 < start) continue;
-            if (hand[idx] and hand[idx + 1] and hand[idx + 2]) {
-                hand[idx]--;
-                hand[idx + 1]--;
-                hand[idx + 2]--;
-                bool res_split =
-                    split_mianzi(hand, pattern, remain - 1, idx + 34);
-                hand[idx]++;
-                hand[idx + 1]++;
-                hand[idx + 2]++;
-                if (res_split) {
-                    for (auto it = pattern.end() - 1; it >= pattern.begin();
-                         it--) {
-                        if (int(it->size()) >= 3 * remain) break;
-                        it->emplace_back(idx);
-                        it->emplace_back(idx + 1);
-                        it->emplace_back(idx + 2);
-                    }
-                    res = true;
+            const int k = hand[idx];
+            if (k == 0) continue;
+            bool res_split = false;
+            hand[idx] -= k;
+            hand[idx + 1] -= k;
+            hand[idx + 2] -= k;
+            if (hand[idx + 1] >= 0 and hand[idx + 2] >= 0) {
+                res_split = split_mianzi(hand, pattern, remain - k, idx + 35);
+            }
+            hand[idx] += k;
+            hand[idx + 1] += k;
+            hand[idx + 2] += k;
+            if (not res_split) return res;
+            for (auto it = pattern.end() - 1; it >= pattern.begin(); it--) {
+                if (int(it->size()) >= 3 * remain) break;
+                for (int l = 0; l < k; l++) {
+                    it->emplace_back(idx);
+                    it->emplace_back(idx + 1);
+                    it->emplace_back(idx + 2);
                 }
             }
+            res = true;
         }
     }
     return res;
