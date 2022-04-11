@@ -5,6 +5,7 @@ bool split_mianzi(std::vector<int> &hand, pattern_t &pattern, int remain,
     // 全面子取り出せた
     if (remain == 0) {
         pattern.emplace_back();
+        pattern.back().emplace_back(NORMAL);
         return true;
     }
 
@@ -18,7 +19,7 @@ bool split_mianzi(std::vector<int> &hand, pattern_t &pattern, int remain,
         hand[i] += 3;
         if (res_split) {
             for (auto it = pattern.end() - 1; it >= pattern.begin(); it--) {
-                if (int(it->size()) >= 3 * remain) break;
+                if (int(it->size()) >= 3 * remain + 1) break;
                 it->emplace_back(i);
                 it->emplace_back(i);
                 it->emplace_back(i);
@@ -46,7 +47,7 @@ bool split_mianzi(std::vector<int> &hand, pattern_t &pattern, int remain,
             hand[idx + 2] += k;
             if (not res_split) return res;
             for (auto it = pattern.end() - 1; it >= pattern.begin(); it--) {
-                if (int(it->size()) >= 3 * remain) break;
+                if (int(it->size()) >= 3 * remain + 1) break;
                 for (int l = 0; l < k; l++) {
                     it->emplace_back(idx);
                     it->emplace_back(idx + 1);
@@ -109,7 +110,7 @@ bool isagari(std::vector<int> &hand, pattern_t &pattern, int mianzi) {
         hand[i] -= 2;
         if (split_mianzi(hand, pattern, mianzi)) {
             for (auto it = pattern.end() - 1; it >= pattern.begin(); it--) {
-                if (int(it->size()) >= 3 * mianzi + 2) break;
+                if (int(it->size()) >= 3 * mianzi + 3) break;
                 it->emplace_back(i);
                 it->emplace_back(i);
             }
@@ -127,7 +128,13 @@ std::vector<int> list_wait(std::vector<int> &hand, pattern_t &pattern,
     for (int i = 0; i < 34; i++) {
         if (hand[i] == 4) continue;
         hand[i]++;
-        if (isagari(hand, pattern, mianzi)) res.push_back(i);
+        if (isagari(hand, pattern, mianzi)) {
+            res.push_back(i);
+            for (auto it = pattern.end() - 1; it >= pattern.begin(); it--) {
+                if (int(it->size()) >= 3 * mianzi + 4) break;
+                it->emplace_back(i);
+            }
+        }
         hand[i]--;
     }
     return res;
